@@ -20,5 +20,4 @@ print "   " * first_date.wday
   puts if date.saturday?
 end
 
-puts 
-#git config test
+puts
