@@ -8,7 +8,7 @@ m = params["m"]
 year = y.nil? ? Date.today.year : y.to_i
 month = m.nil? ? Date.today.month : m.to_i
 
-first_date =  Date.new(year, month, 1)
+first_date = Date.new(year, month, 1)
 last_date = Date.new(year, month, -1)
 
 puts first_date.strftime("%-m月 %Y").center(20)
