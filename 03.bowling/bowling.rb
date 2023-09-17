@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'debug'
 
 score = ARGV[0]
 scores = score.split(',')
@@ -12,26 +13,20 @@ scores.each do |s|
   end
 end
 
-frames = []
-shots.each_slice(2) do |s|
-  frames << s
-end
+frames = shots.each_slice(2).to_a
 
 point = 0
 frames.each_with_index do |frame, i|
-  point += if i >= 9
+  point += if i >= 9 || frame.sum <= 9
              frame.sum
-           elsif frame.sum <= 9
-             frame.sum
-           elsif frames[i] == [10, 0]
+           elsif frame[0] == 10
              if frames[i + 1] == [10, 0]
                10 + 10 + frames[i + 2][0]
              else
                10 + frames[i + 1].sum
              end
-           # elsif frame.sum == 10 スペアの時条件の書き方はelseとどちらがよろしいですか？
            else
-             frames[i].sum + frames[i + 1][0]
+             10 + frames[i + 1][0]
            end
 end
 
