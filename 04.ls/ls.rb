@@ -1,25 +1,22 @@
+#!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'pathname'
+NUMBER_OF_COLUMNS = 3
+COLUMN_MARGIN = 3
 
-dir_path = Dir.pwd
-files = Dir.glob("#{dir_path}/*").sort
+files = Dir.glob("*").sort
 
-max_length = 0
+number_of_row = (files.size / NUMBER_OF_COLUMNS.to_f).ceil
+files_array = files.each_slice(number_of_row).to_a
 
-files.each do |file|
-  file_name = File.basename(file)
-  file_length = file_name.length
-  max_length = file_length if file_length > max_length
+max_length_array = files_array.map do |elements|
+  elements.map {|file|file.length}.max
 end
 
-Files_column = 3
-files_row = (files.size / Files_column.to_f).ceil
-
-(0...files_row).each do |i|
-  Files_column.times do |j|
-    index = i + j * files_row
-    print File.basename(files[index]).ljust(max_length + 3) if files[index]
+(0...number_of_row).each do |row|
+  NUMBER_OF_COLUMNS.times do |column|
+    index = row + column * number_of_row
+    print files[index].ljust(max_length_array[column] + COLUMN_MARGIN) if files[index]
   end
   puts
 end
