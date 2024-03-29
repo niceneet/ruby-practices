@@ -9,14 +9,9 @@ def main
   output_ls(files)
 end
 
-def make_max_lengths(sliced_files)
-  sliced_files.map { _1.map(&:length).max }
-end
-
 def output_ls(files)
   number_of_row = (files.size / NUMBER_OF_COLUMNS.to_f).ceil
-  sliced_files = files.each_slice(number_of_row).to_a
-  max_lengths = make_max_lengths(sliced_files)
+  max_lengths = make_max_lengths(files, number_of_row)
 
   (0...number_of_row).each do |row|
     NUMBER_OF_COLUMNS.times do |column|
@@ -25,6 +20,10 @@ def output_ls(files)
     end
     puts
   end
+end
+
+def make_max_lengths(files, number_of_row)
+  files.each_slice(number_of_row).to_a.map { _1.map(&:length).max }
 end
 
 main
