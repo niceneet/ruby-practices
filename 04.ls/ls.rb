@@ -8,10 +8,9 @@ COLUMN_MARGIN = 3
 
 def main
   params = ARGV.getopts('a')
-  params['a'] ? files = Dir.glob('*', File::FNM_DOTMATCH).sort : files = Dir.glob('*').sort
+  files = params['a'] ? Dir.glob('*', File::FNM_DOTMATCH).sort : Dir.glob('*').sort
   output_ls(files)
 end
-
 
 def output_ls(files)
   number_of_row = (files.size / NUMBER_OF_COLUMNS.to_f).ceil
