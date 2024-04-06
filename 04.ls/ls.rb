@@ -1,11 +1,14 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'optparse'
+
 NUMBER_OF_COLUMNS = 3
 COLUMN_MARGIN = 3
 
 def main
-  files = Dir.glob('*').sort
+  params = ARGV.getopts('a')
+  files = params['a'] ? Dir.glob('*', File::FNM_DOTMATCH).sort : Dir.glob('*').sort
   output_ls(files)
 end
 
