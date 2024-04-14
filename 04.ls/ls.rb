@@ -7,8 +7,9 @@ NUMBER_OF_COLUMNS = 3
 COLUMN_MARGIN = 3
 
 def main
-  params = ARGV.getopts('a')
+  params = ARGV.getopts('a', 'r')
   files = params['a'] ? Dir.glob('*', File::FNM_DOTMATCH).sort : Dir.glob('*').sort
+  files = files.reverse if params['r']
   output_ls(files)
 end
 
