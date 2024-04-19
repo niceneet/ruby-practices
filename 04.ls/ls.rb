@@ -7,6 +7,26 @@ require 'etc'
 NUMBER_OF_COLUMNS = 3
 COLUMN_MARGIN = 3
 SIZE_INDENT = 2
+MODE_MAP = {
+  '0' => '---',
+  '1' => '--x',
+  '2' => '-w-',
+  '3' => '-wx',
+  '4' => 'r--',
+  '5' => 'r-x',
+  '6' => 'rw-',
+  '7' => 'rwx'
+}.freeze
+
+FORMAT_TYPE = {
+  'file' => '-',
+  'directory' => 'd',
+  'characterSpecial' => 'c',
+  'blockSpecial' => 'b',
+  'fifo' => 'p',
+  'link' => 'l',
+  'socket' => 's'
+}.freeze
 
 def main
   params = ARGV.getopts('a', 'r', 'l')
@@ -50,10 +70,7 @@ def output_ls_l(files)
 end
 
 def output_total_blocks(files)
-  blocks = files.map do |file|
-    File::Stat.new(file).blocks
-  end
-  puts "total #{blocks.sum}"
+  puts "total #{files.sum { |file| File.lstat(file).blocks }}"
 end
 
 def get_max_file_size(files)
@@ -61,36 +78,12 @@ def get_max_file_size(files)
 end
 
 def output_file_type(file_stat)
-  case file_stat.ftype
-  when 'file'
-    print '-'
-  when 'directory'
-    print 'd'
-  when 'characterSpecial'
-    print 'c'
-  when 'blockSpecial'
-    print 'b'
-  when 'fifo'
-    print 'p'
-  when 'link'
-    print 'l'
-  when 'socket'
-    print 's'
-  end
+  print FORMAT_TYPE[file_stat.ftype]
 end
 
 def output_permission(file_stat)
   (-3..-1).each do |index|
-    case file_stat.mode.to_s(8)[index]
-    when '0' then print '---'
-    when '1' then print '--x'
-    when '2' then print '-w-'
-    when '3' then print '-wx'
-    when '4' then print 'r--'
-    when '5' then print 'r-x'
-    when '6' then print 'rw-'
-    when '7' then print 'rwx'
-    end
+    print MODE_MAP[file_stat.mode.to_s(8)[index]]
   end
 end
 
