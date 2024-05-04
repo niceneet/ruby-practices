@@ -3,17 +3,16 @@
 
 require 'optparse'
 require 'debug'
-# binding.break
 
 SIZE_INDENT = 8
 
 def main #ファイル引数なし
-	p params = ARGV.getopts('lwc')
+	params = ARGV.getopts('lwc')
 	files = ARGV 
 	if files.empty?
 		lines = $stdin.read
 	end
-	p total_array = {l: 0, w: 0, c: 0}#[0, 0, 0]
+	total_array = {l: 0, w: 0, c: 0}
 	unless params.values.any?
 		files.each do |file|
 			lines = File.read(file)
@@ -26,7 +25,7 @@ def main #ファイル引数なし
 			print " #{file}"
 			puts 
 		end
-		total_print(total_array) if files.count >= 2
+		total_print_no_option(total_array) if files.count >= 2
 	else
 		files.each do |file|
 			lines = File.read(file)
@@ -43,22 +42,6 @@ def main #ファイル引数なし
 	end
 end
 
-def total_print_option(total_array, params)
-	total_array.zip(params) do |each_total, opt|
-		print each_total[1].to_s.rjust(SIZE_INDENT) if opt[1] == true
-	end
-	print " total"
-	puts
-end
-
-def total_print(total_array)
-	total_array.each do |each_total|
-		print each_total[1].to_s.rjust(SIZE_INDENT)
-	end
-	print " total"
-	puts
-end
-
 def count_l(file)
 	file.lines.count.to_s.rjust(SIZE_INDENT)
 end
@@ -69,6 +52,22 @@ end
 
 def count_c(file)
 	file.bytesize.to_s.rjust(SIZE_INDENT)
+end
+
+def total_print_no_option(total_array)
+	total_array.each do |each_total|
+		print each_total[1].to_s.rjust(SIZE_INDENT)
+	end
+	print " total"
+	puts
+end
+
+def total_print_option(total_array, params)
+	total_array.zip(params) do |each_total, opt|
+		print each_total[1].to_s.rjust(SIZE_INDENT) if opt[1] == true
+	end
+	print " total"
+	puts
 end
 
 main
