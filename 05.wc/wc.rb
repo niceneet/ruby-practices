@@ -6,19 +6,19 @@ require 'optparse'
 SIZE_INDENT = 8
 
 def main
+  params = ARGV.getopts('lwc')
   files = ARGV
   if files.empty?
     standard_input = [$stdin.read.to_s]
-    file_specification = false
-    output_section(standard_input, file_specification)
+    p file_specification = false
+    output_section(standard_input, params, file_specification)
   else
-    file_specification = true
-    output_section(files, file_specification)
+    p file_specification = true
+    output_section(files, params, file_specification)
   end
 end
 
-def output_section(files, file_specification)
-  params = ARGV.getopts('lwc')
+def output_section(files, params, file_specification)
   total_hash = { l: 0, w: 0, c: 0 }
   files.each do |file|
     lines = file_specification ? File.read(file) : file
