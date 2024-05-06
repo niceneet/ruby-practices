@@ -10,10 +10,10 @@ def main
   files = ARGV
   if files.empty?
     standard_input = [$stdin.read.to_s]
-    p file_specification = false
+    file_specification = false
     output_section(standard_input, params, file_specification)
   else
-    p file_specification = true
+    file_specification = true
     output_section(files, params, file_specification)
   end
 end
