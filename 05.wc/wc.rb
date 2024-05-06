@@ -2,72 +2,60 @@
 # frozen_string_literal: true
 
 require 'optparse'
-require 'debug'
 
 SIZE_INDENT = 8
 
-def main #ファイル引数なし
-	params = ARGV.getopts('lwc')
-	files = ARGV 
-	if files.empty?
-		lines = $stdin.read
-	end
-	total_array = {l: 0, w: 0, c: 0}
-	unless params.values.any?
-		files.each do |file|
-			lines = File.read(file)
-			print l = count_l(lines)
-			total_array[:l] += l.to_i
-			print w = count_w(lines)
-			total_array[:w] += w.to_i
-			print c = count_c(lines)
-			total_array[:c] += c.to_i
-			print " #{file}"
-			puts 
-		end
-		total_print_no_option(total_array) if files.count >= 2
-	else
-		files.each do |file|
-			lines = File.read(file)
-			print l = count_l(lines) if params['l']
-			total_array[:l] += l.to_i
-			print w = count_w(lines) if params['w']
-			total_array[:w] += w.to_i
-			print c = count_c(lines) if params['c']
-			total_array[:c] += c.to_i
-			print " #{file}"
-			puts
-		end
-		total_print_option(total_array, params) if files.count >= 2
-	end
+def main
+  files = ARGV
+  if files.empty?
+    standard_input = [$stdin.read.to_s]
+    file_specification = false
+    output_section(standard_input, file_specification)
+  else
+    file_specification = true
+    output_section(files, file_specification)
+  end
+end
+
+def output_section(files, file_specification)
+  params = ARGV.getopts('lwc')
+  total_hash = { l: 0, w: 0, c: 0 }
+  files.each do |file|
+    lines = file_specification ? File.read(file) : file
+    print_section(lines, total_hash, params)
+    print " #{file}" if file_specification
+    puts
+  end
+  total_print_option(total_hash, params) if files.count >= 2
+end
+
+def print_section(lines, total_hash, params)
+  print l = count_l(lines) if params['l'] || params.values.none?
+  print w = count_w(lines) if params['w'] || params.values.none?
+  print c = count_c(lines) if params['c'] || params.values.none?
+  total_hash[:l] += l.to_i
+  total_hash[:w] += w.to_i
+  total_hash[:c] += c.to_i
 end
 
 def count_l(file)
-	file.lines.count.to_s.rjust(SIZE_INDENT)
+  file.lines.count.to_s.rjust(SIZE_INDENT)
 end
 
 def count_w(file)
-	file.scan(/\s+/).size.to_s.rjust(SIZE_INDENT)
+  file.scan(/\s+/).size.to_s.rjust(SIZE_INDENT)
 end
 
 def count_c(file)
-	file.bytesize.to_s.rjust(SIZE_INDENT)
+  file.bytesize.to_s.rjust(SIZE_INDENT)
 end
 
-def total_print_no_option(total_array)
-	total_array.each do |each_total|
-		print each_total[1].to_s.rjust(SIZE_INDENT)
-	end
-	print " total"
-	puts
-end
-
-def total_print_option(total_array, params)
-	total_array.zip(params) do |each_total, opt|
-		print each_total[1].to_s.rjust(SIZE_INDENT) if opt[1] == true
-	end
-	print " total"
-	puts
+def total_print_option(total_hash, params)
+  total_hash.zip(params) do |each_total, opt|
+    print each_total[1].to_s.rjust(SIZE_INDENT) if opt[1] || params.values.none?
+  end
+  print ' total'
+  puts
 end
 
 main
