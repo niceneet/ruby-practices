@@ -43,6 +43,8 @@ def count_l(file)
 end
 
 def count_w(file)
+  file.gsub!(/\A\n\n/, '\n') #文頭の改行２つを１つにを無くなるまで繰り返す
+  file.sub!(/\n\w/, '\w') #改行＋任意の単語文字があったら、任意の単語文字にする
   file.scan(/\s+/).size.to_s.rjust(SIZE_INDENT)
 end
 
